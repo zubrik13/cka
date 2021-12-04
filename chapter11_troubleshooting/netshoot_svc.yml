@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-netshoot
+spec:
+  containers:
+  - name: nginx-netshoot
+    image: nginx:1.19.1
+    ports:
+    - containerPort: 80
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: netshoot-svc
+spec:
+  type: ClusterIP
+  selector:
+    app: nginx-netshoot
+  ports:
+    - port: 80
+      targetPort: 80
+
