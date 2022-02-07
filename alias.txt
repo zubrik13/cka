@@ -1,2 +1,2 @@
-alias cl="clear"
+alias cl=clear
 alias k=kubectl
