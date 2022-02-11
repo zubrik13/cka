@@ -43,3 +43,24 @@ kubectl create service nodeport nginx --tcp=80:80 --node-port=30080 --dry-run=cl
 
 # Exec into a pod
 kubectl exec app -n elastic-stack -it -- /bin/sh
+
+## Networking
+
+# check ports
+netstat -nplt | grep kube-scheduler
+
+# install CNI with custom ip table
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')&env.IPALLOC_RANGE=10.50.0.0/16"
+
+# check CoreDNS config
+kubectl -n kube-system describe deployments.apps coredns \
+| grep -A2 Args \
+| grep Corefile
+
+# create Ingress
+kubectl create ingress ingress-test --rule="wear.my-online-store.com/wear*=wear-service:80"
+
+# expose deployment
+kubectl expose deployment ingress-controller \
+--type=NodePort --port=80 --name=ingress --dry-run=client \
+-o yaml > ingress.yaml
