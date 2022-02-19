@@ -68,6 +68,12 @@ sudo apt-mark hold kubelet kubeadm kubectl
 ## initialize cluster -> control plane only!
 sudo kubeadm init --pod-network-cidr 192.168.0.0/16 --kubernetes-version 1.22.0
 
+# ifconfig eth0
+kubeadm init --apiserver-cert-extra-sans=controlplane \
+--apiserver-advertise-address 10.2.223.3 \
+--pod-network-cidr=10.244.0.0/16
+
+
 # set kubectl access
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config

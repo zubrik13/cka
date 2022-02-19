@@ -64,3 +64,33 @@ kubectl create ingress ingress-test --rule="wear.my-online-store.com/wear*=wear-
 kubectl expose deployment ingress-controller \
 --type=NodePort --port=80 --name=ingress --dry-run=client \
 -o yaml > ingress.yaml
+
+## JSON PATH
+kubectl get nodes -o=jsonpath='{.items[*].metadata.name}' \
+> /opt/outputs/node_names.txt
+
+kubectl get nodes -o jsonpath='{.items[*].status.nodeInfo.osImage}' \
+> /opt/outputs/nodes_os.txt
+
+kubectl config view --kubeconfig=my-kube-config \
+-o jsonpath="{.users[*].name}" > /opt/outputs/users.txt
+
+# sort 
+kubectl get pv --sort-by=.spec.capacity.storage \
+> /opt/outputs/storage-capacity-sorted.txt
+
+kubectl get pv --sort-by=.spec.capacity.storage \
+-o=custom-columns=NAME:.metadata.name,CAPACITY:.spec.capacity.storage \
+> /opt/outputs/pv-and-capacity-sorted.txt
+
+kubectl config view --kubeconfig=my-kube-config \
+-o jsonpath="{.contexts[?(@.context.user=='aws-user')].name}" \
+> /opt/outputs/aws-context-name
+
+# custom deploy
+kubectl get deploy -n admin2406 --sort-by=.metadata.name \
+-o=custom-columns=DEPLOYMENT:.metadata.name,\
+CONTAINER_IMAGE:.spec.template.spec.containers[*].image,\
+READY_REPLICAS:.spec.replicas,\
+NAMESPACE:.metadata.namespace\
+> /opt/admin2406_data
